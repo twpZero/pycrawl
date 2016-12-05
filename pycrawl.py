@@ -236,6 +236,7 @@ class Engine:
         w=w.replace(u",","")
         w=w.replace(u"(","")
         w=w.replace(u")","")
+        w=w.replace(u"\t","")
         w=w.replace(u" ","")
         w=w.replace(u'"','')
         w=w.replace(u"’","")
