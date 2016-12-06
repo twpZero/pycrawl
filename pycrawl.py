@@ -16,6 +16,7 @@ import argparse, ConfigParser, urllib2
 from HTMLParser import HTMLParser
 # Methode pour créer des liens absolus.
 from urlparse import urljoin
+import re
 
 # Nom par defaut du fichier de conf
 CONFIG_FILE="crawl.conf"
@@ -59,7 +60,7 @@ def getConfigWordsBlackList(cp):
     """
     if cp.has_section("Words"):
         try : 
-            return cp.get("Words","wordBlacklist").split(",")
+            return cp.get("Words","wordBlacklist").decode("utf8").split(",")
         except Exception as ex:
             raise ex
 
@@ -72,7 +73,7 @@ def getConfigSourcesList(cp):
     """
     if cp.has_section("Seeds"):
         try : 
-            return cp.get("Seeds","sourcesList").split(",")
+            return cp.get("Seeds","sourcesList").decode("utf8").split(",")
         except Exception as ex:
             raise ex
 
@@ -128,14 +129,24 @@ class NewsParser(HTMLParser):
                     print("[+] Crawling :"+self.currentSeed)
                     # Ouverture de l'url
                     response = self.opener.open(self.currentSeed)
-                    # Encodage obligatoire des données
-                    self.feed(response.read().decode('utf-8'))
+                    htmldata=response.read()
+                    try :
+                        # Encodage obligatoire des données
+                        if type(htmldata)!=unicode:
+                            # Handle \xe2 UnicodeDecodeError: 'utf8' codec can't decode byte 0xe2 with errors='replace'
+                            htmldata=htmldata.decode('utf8', errors='replace')
+                    except Exception as ex1:
+                        raise ex1
                     # fermeture de la socket en cas de reussite
                     response.close()
-                except Exception as ex:
+                    # debut du parsing
+                    self.feed(htmldata)
+                except urllib2.HTTPError as herror:
                     # Gestion de la fermeture de la socket en cas d'erreur
                     if response != None:
                         response.close()
+                    raise herror
+                except Exception as ex:
                     raise ex
         else :
             self.currentSeed = ""
@@ -150,8 +161,10 @@ class NewsParser(HTMLParser):
         while len(self.seeds) > 0:
             try:
                 self.nextSeed()
+            except urllib2.HTTPError as httperr:
+                print("[-] HTTPError "+str(httperr)+">"+httperr.message)
             except Exception as ex:
-                print("[-] "+str(ex)+">"+ex.message)
+                print("[-] Crawling Exception "+str(ex)+">"+ex.message)
 
     def handle_starttag(self,tag,attrs):
         """
@@ -228,7 +241,11 @@ class Engine:
         self.wordBlacklist=wbl
 
     def _processWord(self,word):
-        w=word.encode("utf8").decode("utf8")
+        w=word
+        if re.search("^http",w)!=None:
+            w="" 
+        if type(word) !=unicode:
+            w=w.decode("utf8")
         w=w.replace(u"[","")
         w=w.replace(u"]","")
         w=w.replace(u".","")
@@ -256,8 +273,9 @@ class Engine:
     
     def addLink(self,href,strWordList):
         if href not in self.links.keys():
-            if href[-1] != "/" :
-                href=href+"/"
+            if len(href)>0:
+                if href[-1] != "/" :
+                    href=href+"/"
             self.links[href]=[]
         for word in strWordList.split(" "):
             word=self._processWord(word)
@@ -268,14 +286,16 @@ class Engine:
         for word,count in self.words.iteritems():
             if count >= numberOfMatch:
                 sentence="\n"+word+" ("+str(count)+")"
-                print(sentence.encode("utf8"))
+                if type(sentence)!=unicode:
+                    sentence=sentence.decode('utf8', errors='replace')
+                print(sentence.encode("utf8",errors="replace"))
                 for href,tab in self.links.iteritems():
                     if word in tab :
-                        print("\t"+href)
+                        print(u"\t"+href)
                 
 
 cp=ConfigParser.ConfigParser()
-genConfigFile(cp)
+#genConfigFile(cp)
 readConfigFile(cp)
 
 seedsList=getConfigSourcesList(cp)
