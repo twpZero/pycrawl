@@ -56,11 +56,12 @@ def getConfigWordsBlackList(cp):
     @function getConfigWordsBlackList
     Recupere dans le fichier de config la list des mots blacklistés
     @param cp Objet ConfigParser 
+    @return List unicode wordBlackList
     @raise Exception  Erreur de lecture du fichier
     """
     if cp.has_section("Words"):
         try : 
-            return cp.get("Words","wordBlacklist").decode("utf8").split(",")
+            return cp.get("Words","wordBlacklist").decode("utf8",errors="replace").split(",")
         except Exception as ex:
             raise ex
 
@@ -69,11 +70,12 @@ def getConfigSourcesList(cp):
     @function getConfigSourcesList
     Recupere dans le fichier de config la list des sites a parser
     @param cp Objet ConfigParser 
+    @return List unicode sourcesList
     @raise Exception  Erreur de lecture du fichier
     """
     if cp.has_section("Seeds"):
         try : 
-            return cp.get("Seeds","sourcesList").decode("utf8").split(",")
+            return cp.get("Seeds","sourcesList").decode("utf8",errors="replace").split(",")
         except Exception as ex:
             raise ex
 
@@ -228,19 +230,35 @@ class Engine:
     @attr words Mot vus, dict{Mot:Count}
     @attr links Liens vus, dict{url,[mots,clés]}
     @attr wordBlacklist List de mots à ne pas traiter
-    @attr linksBlacklist Listde liens à ne pas traiter
+    @attr linksBlacklist List de liens à ne pas traiter
+    @attr sortedWords Table d'association des mots avec leur nombre d'occurence
 
     """
     def __init__(self):
+        """
+        @method init
+
+        """
         self.words={}
         self.links={}
         self.wordBlacklist=[]
         self.linksBlacklist=[]
+        self.sortedWords={}
 
     def setWordBlackList(self,wbl):
+        """
+        @method setWordBlackList
+        @param wbl List of blacklisted words
+        """
         self.wordBlacklist=wbl
 
     def _processWord(self,word):
+        """
+        @method _processWord
+        Sanitise the inputs and return it
+        @param word str/unicode
+        @return unicode word
+        """
         w=word
         if re.search("^http",w)!=None:
             w="" 
@@ -263,7 +281,14 @@ class Engine:
         w=w.replace(u"…","")
         w=w.lower()
         return w
+    
     def _addWord(self,word):
+        """
+        @method _addWord
+        Add word in the word counter
+        @Note Handle the blacklist feature
+        @param word unicode word to add
+        """
         if len(word) > 1 :
             if word not in self.wordBlacklist :
                 if word not in self.words.keys():
@@ -272,17 +297,38 @@ class Engine:
                     self.words[word]+=1
     
     def addLink(self,href,strWordList):
+        """
+        @method addLink
+        Add link with the corresponding keywords in the engine
+        @param href unicode url 
+        @param strWordList List unicode of related keywords
+        @note Hande blacklist feature
+        """
         if href not in self.links.keys():
+            # gestion du cas ou l'index -1 n'existe pas
             if len(href)>0:
+                # Ajout de / à la fin si necessaire
                 if href[-1] != "/" :
                     href=href+"/"
+            # Initialisation des la liste de mots clés, si le lien n'este pas deja
             self.links[href]=[]
+        # recuperer chaque mot
         for word in strWordList.split(" "):
+            # sanitise input
             word=self._processWord(word)
             if word not in self.wordBlacklist :
+                # ajout du mot clé à la liste
                 self.links[href].append(word.lower())
+                # comptage du mot clé
                 self._addWord(word.lower())
+
     def top(self,numberOfMatch):
+        """
+        @method top
+        Return words and related links if they match more than *numberOfMatch* times
+        @print words, count and related link
+        @note To be printed you may use str instead of unicode strings
+        """
         for word,count in self.words.iteritems():
             if count >= numberOfMatch:
                 sentence="\n"+word+" ("+str(count)+")"
@@ -291,8 +337,38 @@ class Engine:
                 print(sentence.encode("utf8",errors="replace"))
                 for href,tab in self.links.iteritems():
                     if word in tab :
-                        print(u"\t"+href)
+                        print("\t"+href.encode("utf8",errors="replace"))
+
+    def _sort(self):
+        if len(self.sortedWords) == 0:
+            for word,count in self.words.iteritems():
+                if count not in self.sortedWords.keys():
+                    self.sortedWords[count]=[]
+                self.sortedWords[count].append(word)
+    
+    def listWords(self):
+        self._sort()
+        for count,words in self.sortedWords.iteritems():
+            l=""
+            for word in words:
+                l+= word+" , "
+            print(str(count)+" "+l)
+
+    def getWordsByCount(self,count):
+        self._sort()
+        try : 
+            return self.sortedWords[count]
+        except:
+            return []
                 
+    def getLinksByWord(self,word):
+        hrefs=[]
+        for href,tab in self.links.iteritems():
+            if word in tab :
+                hrefs.append(href)
+        return hrefs
+
+### MAIN ###
 
 cp=ConfigParser.ConfigParser()
 #genConfigFile(cp)
@@ -307,6 +383,6 @@ eng.setWordBlackList(blackList)
 np=NewsParser(seedsList, engine=eng)
 np.crawl()
 
-eng.top(5)
-
+#eng.top(1)
+eng.listWords()
 # TODO sort by count
