@@ -105,11 +105,12 @@ class Engine:
         for word in strWordList.split(" "):
             # sanitise input
             word=self._processWord(word)
-            if word not in self.wordBlacklist :
-                # ajout du mot clé à la liste
-                self.links[href].append(word.lower())
-                # comptage du mot clé
-                self._addWord(word.lower())
+            if len(word) > 1:
+                if word not in self.wordBlacklist :
+                    # ajout du mot clé à la liste
+                    self.links[href].append(word.lower())
+                    # comptage du mot clé
+                    self._addWord(word.lower())
 
     def top(self,numberOfMatch):
         """
@@ -135,6 +136,13 @@ class Engine:
                     self.sortedWords[count]=[]
                 self.sortedWords[count].append(word)
     
+    def getWordsCounts(self):
+        self._sort()
+        return self.sortedWords.keys()
+    
+    def getMaxWordCount(self):
+        return max(self.getWordsCounts())
+        
     def listWords(self):
         self._sort()
         for count,words in self.sortedWords.iteritems():

@@ -81,7 +81,43 @@ def getConfigSourcesList(cp):
 
 from NewsParser import *
 from Engine import *
+from Observer import *
+import json
 
+def jsonDump(self):
+    return self.__dict__
+
+def save():
+    global eng
+    global obs
+    f=open("register.dump","w")
+    json.dump(obs.register,f)
+    f.close()
+    f=open("links.dump","w")
+    json.dump(eng.links,f)
+    f.close()
+
+def restore():
+    global eng
+    global obs
+    try :
+        f=open("register.dump","r")
+        obs.register=json.load(f)
+        f.close()
+    except:
+        pass
+    try :
+        f=open("links.dump","r")
+        links=json.load(f)
+        obs.seen = links.keys()
+        eng.links = links
+        f.close()
+    except:
+        pass
+
+def crawl():
+    global np
+    np.crawl()
 ### MAIN ###
 
 cp=ConfigParser.ConfigParser()
@@ -95,8 +131,14 @@ eng=Engine()
 eng.setWordBlackList(blackList)
 
 np=NewsParser(seedsList, engine=eng)
-np.crawl()
+obs = Observer(eng)
 
-eng.top(5)
+if __name__=="__main__":
+    restore()
+    crawl()
+    obs.notify()
+    save()
+
+#eng.top(5)
 #eng.listWords()
-# TODO sort by count
+
