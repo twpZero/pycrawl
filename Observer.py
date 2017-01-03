@@ -11,9 +11,11 @@ class ConsoleDisplay:
     def displayUrl(self,url):
         print("\t "+url+"")
     def displaySeenUrl(self,url):
-        print("\t @old "+url)
+        self.displayUrl("@old "+url)
     def displayNotifiedUrl(self,url,words):
-        print("\t @seen ("+str(words)+") "+url)
+        self.displayUrl("["+', '.join(words)+"] "+url)
+    def displaySeenNotifiedUrl(self,url,words):
+        self.displayUrl("@old "+"["+', '.join(words)+"] "+url)
 
                         
 class Observer:
@@ -27,39 +29,54 @@ class Observer:
         self.display=display
         if self.display == None:
             self.display = ConsoleDisplay()
+        self.updated=False
     def setEngine(self,engine):
         self.engine=engine
     def registerWord(self,word):
         self.register.append(word)
-    def _notifyWord(self,word):
+        self.updated=False
+    def setRegister(self,register):
+        self.register = register
+        self.updated = False
+    def _updateNotified(self):
         if self.engine != None:
-            urls=self.engine.getLinksByWord(word)
-            for url in urls:
-                if url not in self.notified.keys():
-                    self.notified[url]=[]
-                if word not in self.notified[url]:
-                    self.notified[url].append(word)
-            return urls
-        return None
+            for word in self.register:
+                urls=self.engine.getLinksByWord(word)
+                for url in urls:
+                    if url not in self.notified.keys():
+                        self.notified[url]=[]
+                    if word not in self.notified[url]:
+                        self.notified[url].append(word)
     def notify(self):
+        if not self.updated :
+            self._updateNotified()
+            self.updated=True
         for word in self.register:
             self.display.displayCategory(word)
-            urls = self._notifyWord(word)
-            old=[]
-            seens=[]
+            urls = self.engine.getLinksByWord(word)
+            old=[] # from past days
+            seens=[] # seen today
             if urls != None:
                 for url in urls :
+                    # si vu avant aujourd'hui
+                    if url in self.seen :
+                        old.append(url)
+                    # si vu plusieurs fois
                     if len(self.notified[url])>1:
                         seens.append(url)
-                    else :
-                        if url in self.seen :
-                            old.append(url)
-                        else :
-                            self.display.displayUrl(url)      
+                    if url not in old and url not in seens :
+                        self.display.displayUrl(url)      
 
+            print("\t--")
             for url in seens :
-                self.display.displayNotifiedUrl(url,self.notified[url])
+                if url not in old:
+                    self.display.displayNotifiedUrl(url,self.notified[url])
+            print("\t--")
             for url in old :
-                self.display.displaySeenUrl(url)
+                if url in seens :
+                    self.display.displaySeenNotifiedUrl(url,self.notified[url])
+                    old.remove(url)
+            for url in old :
+                    self.display.displaySeenUrl(url)
             del(seens)
             del(old)
