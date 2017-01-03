@@ -102,7 +102,7 @@ def restore():
     global obs
     try :
         f=open("register.dump","r")
-        obs.register=json.load(f)
+        obs.setRegister(json.load(f))
         f.close()
     except:
         pass
@@ -139,6 +139,7 @@ if __name__=="__main__":
     obs.notify()
     save()
 
-#eng.top(5)
-#eng.listWords()
-
+    print("\n\n KeyWords : ")
+    eng.printKeyWords(5)
+    #eng.listWords()
+    print("\n")

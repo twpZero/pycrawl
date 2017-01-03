@@ -164,4 +164,9 @@ class Engine:
             if word in tab :
                 hrefs.append(href)
         return hrefs
+    
+    def printKeyWords(self,maxCount):
+        for count in self.getWordsCounts() :
+            if count >= maxCount:
+                print(str(count)+" "+str(self.getWordsByCount(count)))
 

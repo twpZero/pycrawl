@@ -4,7 +4,7 @@
 from pycrawl import *
 import code
 
-usage_str="Try eng.listWords() , obs.registerWord(word), obs.notify()\nOr the combo restore() ; crawl() ; obs.notify() ; save() \n"
+usage_str="Try eng.printKeyWords(5) , obs.registerWord(word), obs.notify()\nOr the combo restore() ; crawl() ; obs.notify() ; save() \n"
 def usage():
     print(usage_str)
 
