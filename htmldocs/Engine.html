@@ -1,0 +1,81 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html><head><title>Python: module Engine</title>
+<meta charset="utf-8">
+</head><body bgcolor="#f0f0f8">
+
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="heading">
+<tr bgcolor="#7799ee">
+<td valign=bottom>&nbsp;<br>
+<font color="#ffffff" face="helvetica, arial">&nbsp;<br><big><big><strong>Engine</strong></big></big></font></td
+><td align=right valign=bottom
+><font color="#ffffff" face="helvetica, arial"><a href=".">index</a><br><a href="file:/root/Stuff/myTools/pycrawl/Engine.py">/root/Stuff/myTools/pycrawl/Engine.py</a></font></td></tr></table>
+    <p><tt>#&nbsp;coding:&nbsp;utf8</tt></p>
+<p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#aa55cc">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#ffffff" face="helvetica, arial"><big><strong>Modules</strong></big></font></td></tr>
+    
+<tr><td bgcolor="#aa55cc"><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt></td><td>&nbsp;</td>
+<td width="100%"><table width="100%" summary="list"><tr><td width="25%" valign=top><a href="ConfigParser.html">ConfigParser</a><br>
+</td><td width="25%" valign=top><a href="argparse.html">argparse</a><br>
+</td><td width="25%" valign=top><a href="re.html">re</a><br>
+</td><td width="25%" valign=top><a href="urllib2.html">urllib2</a><br>
+</td></tr></table></td></tr></table><p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#ee77aa">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#ffffff" face="helvetica, arial"><big><strong>Classes</strong></big></font></td></tr>
+    
+<tr><td bgcolor="#ee77aa"><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt></td><td>&nbsp;</td>
+<td width="100%"><dl>
+<dt><font face="helvetica, arial"><a href="Engine.html#Engine">Engine</a>
+</font></dt></dl>
+ <p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#ffc8d8">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#000000" face="helvetica, arial"><a name="Engine">class <strong>Engine</strong></a></font></td></tr>
+    
+<tr bgcolor="#ffc8d8"><td rowspan=2><tt>&nbsp;&nbsp;&nbsp;</tt></td>
+<td colspan=2><tt>@class&nbsp;<a href="#Engine">Engine</a><br>
+Moteur&nbsp;de&nbsp;correlation&nbsp;pour&nbsp;liens&nbsp;et&nbsp;pages&nbsp;parcourus.<br>
+&nbsp;<br>
+@attr&nbsp;words&nbsp;Mot&nbsp;vus,&nbsp;dict{Mot:Count}<br>
+@attr&nbsp;links&nbsp;Liens&nbsp;vus,&nbsp;dict{url,[mots,clés]}<br>
+@attr&nbsp;wordBlacklist&nbsp;List&nbsp;de&nbsp;mots&nbsp;à&nbsp;ne&nbsp;pas&nbsp;traiter<br>
+@attr&nbsp;linksBlacklist&nbsp;List&nbsp;de&nbsp;liens&nbsp;à&nbsp;ne&nbsp;pas&nbsp;traiter<br>
+@attr&nbsp;sortedWords&nbsp;Table&nbsp;d'association&nbsp;des&nbsp;mots&nbsp;avec&nbsp;leur&nbsp;nombre&nbsp;d'occurence<br>&nbsp;</tt></td></tr>
+<tr><td>&nbsp;</td>
+<td width="100%">Methods defined here:<br>
+<dl><dt><a name="Engine-__init__"><strong>__init__</strong></a>(self)</dt><dd><tt>@method&nbsp;init</tt></dd></dl>
+
+<dl><dt><a name="Engine-addLink"><strong>addLink</strong></a>(self, href, strWordList)</dt><dd><tt>@method&nbsp;addLink<br>
+Add&nbsp;link&nbsp;with&nbsp;the&nbsp;corresponding&nbsp;keywords&nbsp;in&nbsp;the&nbsp;engine<br>
+@param&nbsp;href&nbsp;unicode&nbsp;url&nbsp;<br>
+@param&nbsp;strWordList&nbsp;List&nbsp;unicode&nbsp;of&nbsp;related&nbsp;keywords<br>
+@note&nbsp;Hande&nbsp;blacklist&nbsp;feature</tt></dd></dl>
+
+<dl><dt><a name="Engine-getLinksByWord"><strong>getLinksByWord</strong></a>(self, word)</dt></dl>
+
+<dl><dt><a name="Engine-getMaxWordCount"><strong>getMaxWordCount</strong></a>(self)</dt></dl>
+
+<dl><dt><a name="Engine-getWordsByCount"><strong>getWordsByCount</strong></a>(self, count)</dt></dl>
+
+<dl><dt><a name="Engine-getWordsCounts"><strong>getWordsCounts</strong></a>(self)</dt></dl>
+
+<dl><dt><a name="Engine-listWords"><strong>listWords</strong></a>(self)</dt></dl>
+
+<dl><dt><a name="Engine-printKeyWords"><strong>printKeyWords</strong></a>(self, maxCount)</dt></dl>
+
+<dl><dt><a name="Engine-setWordBlackList"><strong>setWordBlackList</strong></a>(self, wbl)</dt><dd><tt>@method&nbsp;setWordBlackList<br>
+@param&nbsp;wbl&nbsp;List&nbsp;of&nbsp;blacklisted&nbsp;words</tt></dd></dl>
+
+<dl><dt><a name="Engine-top"><strong>top</strong></a>(self, numberOfMatch)</dt><dd><tt>@method&nbsp;top<br>
+Return&nbsp;words&nbsp;and&nbsp;related&nbsp;links&nbsp;if&nbsp;they&nbsp;match&nbsp;more&nbsp;than&nbsp;*numberOfMatch*&nbsp;times<br>
+@print&nbsp;words,&nbsp;count&nbsp;and&nbsp;related&nbsp;link<br>
+@note&nbsp;To&nbsp;be&nbsp;printed&nbsp;you&nbsp;may&nbsp;use&nbsp;str&nbsp;instead&nbsp;of&nbsp;unicode&nbsp;strings</tt></dd></dl>
+
+</td></tr></table></td></tr></table>
+</body></html>
