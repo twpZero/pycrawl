@@ -3,7 +3,35 @@
 
 from Engine import *
 
-class ConsoleDisplay:
+class Display:
+    def __init__(self):
+        pass
+    def displayCategory(self,category):
+        pass
+    def displayUrl(self,url):
+        pass
+    def displaySeenUrl(self,url):
+        pass
+    def displayNotifiedUrl(self,url,words):
+        pass
+    def displaySeenNotifiedUrl(self,url,words):
+        pass
+
+class JSONDisplay(Display):
+    """
+    Fill an object with the data in order to dump it onto a file within the main.
+    """
+    def __init__(self):
+        self.json={}
+        self.currentCategory=""
+    def displayCategory(self,category):
+        if category not in self.json.keys():
+            self.json[category]=[]
+        self.currentCategory=category
+    def displayUrl(self,url):
+        self.json[self.currentCategory].append(url)
+        
+class ConsoleDisplay(Display):
     def __init__(self):
         pass
     def displayCategory(self,category):
