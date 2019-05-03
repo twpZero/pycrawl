@@ -30,6 +30,8 @@ class JSONDisplay(Display):
         self.currentCategory=category
     def displayUrl(self,url):
         self.json[self.currentCategory].append(url)
+    def displayNotifiedUrl(self,url,words):
+        self.json[self.currentCategory].append(url)
         
 class ConsoleDisplay(Display):
     def __init__(self):
