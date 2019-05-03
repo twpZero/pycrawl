@@ -6,6 +6,8 @@ from Engine import *
 class Display:
     def __init__(self):
         pass
+    def displaySeparator(self):
+        pass
     def displayCategory(self,category):
         pass
     def displayUrl(self,url):
@@ -36,6 +38,8 @@ class JSONDisplay(Display):
 class ConsoleDisplay(Display):
     def __init__(self):
         pass
+    def displaySeparator(self):
+        print("\t--")
     def displayCategory(self,category):
         print("\n["+category+"]")
     def displayUrl(self,url):
@@ -97,11 +101,11 @@ class Observer:
                     if url not in old and url not in seens :
                         self.display.displayUrl(url)      
 
-            print("\t--")
+            self.display.displaySeparator()
             for url in seens :
                 if url not in old:
                     self.display.displayNotifiedUrl(url,self.notified[url])
-            print("\t--")
+            self.display.displaySeparator()
             for url in old :
                 if url in seens :
                     self.display.displaySeenNotifiedUrl(url,self.notified[url])
