@@ -93,12 +93,15 @@ class Engine:
         @param strWordList List unicode of related keywords
         @note Hande blacklist feature
         """
-        if href not in self.links.keys():
-            # gestion du cas ou l'index -1 n'existe pas
-            if len(href)>0:
-                # Ajout de / à la fin si necessaire
+        # gestion du cas ou l'index -1 n'existe pas
+        if len(href)>0:
+            # Ajout de / à la fin si necessaire
+            try:
                 if href[-1] != "/" :
                     href=href+"/"
+            except:
+                pass
+        if href not in self.links.keys():
             # Initialisation des la liste de mots clés, si le lien n'este pas deja
             self.links[href]=[]
         # recuperer chaque mot
