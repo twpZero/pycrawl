@@ -11,11 +11,11 @@ Le but et de pouvoir afficher les articles pour un mot clé, et d'eviter de lire
 
 # import des modules de parsage d'arguments, de fichiers de configuration 
 # et la lib url pour le parcours des liens
-import argparse, ConfigParser, urllib2
+import argparse, configparser, urllib.request
 # Classe de parsage
-from HTMLParser import HTMLParser
+from html.parser import HTMLParser
 # Methode pour créer des liens absolus.
-from urlparse import urljoin
+from urllib.parse import urljoin
 import re
 import json
 
@@ -26,7 +26,7 @@ def genConfigFile(cp):
     """
     @function genConfigFile
     Genere le fichier de configuration par defaut
-    @param cp Objet ConfigParser 
+    @param cp Objet configparser.
     """
     global CONFIG_FILE
     
@@ -47,7 +47,7 @@ def readConfigFile(cp):
     """
     @function readConfigFile
     Lit le fichier de configuration par defaut
-    @param cp Objet ConfigParser 
+    @param cp Objet configparser.
     """
     global CONFIG_FILE
     cp.read(CONFIG_FILE)
@@ -56,13 +56,13 @@ def getConfigWordsBlackList(cp):
     """
     @function getConfigWordsBlackList
     Recupere dans le fichier de config la list des mots blacklistés
-    @param cp Objet ConfigParser 
+    @param cp Objet configparser.
     @return List unicode wordBlackList
     @raise Exception  Erreur de lecture du fichier
     """
     if cp.has_section("Words"):
         try : 
-            return cp.get("Words","wordBlacklist").decode("utf8",errors="replace").split(",")
+            return cp.get("Words","wordBlacklist").split(",")
         except Exception as ex:
             raise ex
 
@@ -70,13 +70,13 @@ def getConfigSourcesList(cp):
     """
     @function getConfigSourcesList
     Recupere dans le fichier de config la list des sites a parser
-    @param cp Objet ConfigParser 
+    @param cp Objet configparser.
     @return List unicode sourcesList
     @raise Exception  Erreur de lecture du fichier
     """
     if cp.has_section("Seeds"):
         try : 
-            return cp.get("Seeds","sourcesList").decode("utf8",errors="replace").split(",")
+            return cp.get("Seeds","sourcesList").split(",")
         except Exception as ex:
             raise ex
 
@@ -121,7 +121,7 @@ def crawl():
     np.crawl()
 ### MAIN ###
 
-cp=ConfigParser.ConfigParser()
+cp=configparser.ConfigParser()
 #genConfigFile(cp)
 readConfigFile(cp)
 

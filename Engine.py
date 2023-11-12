@@ -3,11 +3,11 @@
 
 # import des modules de parsage d'arguments, de fichiers de configuration 
 # et la lib url pour le parcours des liens
-import argparse, ConfigParser, urllib2
+import argparse, configparser, urllib
 # Classe de parsage
-from HTMLParser import HTMLParser
+from html.parser import HTMLParser
 # Methode pour créer des liens absolus.
-from urlparse import urljoin
+from urllib.parse import urljoin
 import re
 
 
@@ -51,8 +51,6 @@ class Engine:
         w=word
         if re.search("^http",w)!=None:
             w="" 
-        if type(word) !=unicode:
-            w=w.decode("utf8")
         w=w.replace(u"[","")
         w=w.replace(u"]","")
         w=w.replace(u".","")
@@ -122,19 +120,17 @@ class Engine:
         @print words, count and related link
         @note To be printed you may use str instead of unicode strings
         """
-        for word,count in self.words.iteritems():
+        for word,count in self.words.items():
             if count >= numberOfMatch:
                 sentence="\n"+word+" ("+str(count)+")"
-                if type(sentence)!=unicode:
-                    sentence=sentence.decode('utf8', errors='replace')
                 print(sentence.encode("utf8",errors="replace"))
-                for href,tab in self.links.iteritems():
+                for href,tab in self.links.items():
                     if word in tab :
                         print("\t"+href.encode("utf8",errors="replace"))
 
     def _sort(self):
         if len(self.sortedWords) == 0:
-            for word,count in self.words.iteritems():
+            for word,count in self.words.items():
                 if count not in self.sortedWords.keys():
                     self.sortedWords[count]=[]
                 self.sortedWords[count].append(word)
@@ -148,7 +144,7 @@ class Engine:
         
     def listWords(self):
         self._sort()
-        for count,words in self.sortedWords.iteritems():
+        for count,words in self.sortedWords.items():
             l=""
             for word in words:
                 l+= word+" , "
@@ -163,7 +159,7 @@ class Engine:
                 
     def getLinksByWord(self,word):
         hrefs=[]
-        for href,tab in self.links.iteritems():
+        for href,tab in self.links.items():
             if word in tab :
                 hrefs.append(href)
         return hrefs
