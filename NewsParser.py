@@ -3,11 +3,11 @@
 
 # import des modules de parsage d'arguments, de fichiers de configuration 
 # et la lib url pour le parcours des liens
-import argparse, ConfigParser, urllib2
+import argparse, configparser, urllib.request
 # Classe de parsage
-from HTMLParser import HTMLParser
+from html.parser import HTMLParser
 # Methode pour créer des liens absolus.
-from urlparse import urljoin
+from urllib.parse import urljoin
 import re
 
 class NewsParser(HTMLParser):
@@ -41,7 +41,7 @@ class NewsParser(HTMLParser):
         self.currentTag = ""
         self.currentHref = ""
         self.currentData = ""
-        self.opener = urllib2.build_opener()
+        self.opener = urllib.request.build_opener()
         # Set User agent
         self.opener.addheaders = [('User-Agent', 'Mozilla/5.0')]
 
@@ -65,16 +65,15 @@ class NewsParser(HTMLParser):
                     htmldata=response.read()
                     try :
                         # Encodage obligatoire des données
-                        if type(htmldata)!=unicode:
-                            # Handle \xe2 UnicodeDecodeError: 'utf8' codec can't decode byte 0xe2 with errors='replace'
-                            htmldata=htmldata.decode('utf8', errors='replace')
+                        htmldata=htmldata.decode('utf8', errors='replace')
+                        # -> Natively handled in python3 ?
                     except Exception as ex1:
                         raise ex1
                     # fermeture de la socket en cas de reussite
                     response.close()
                     # debut du parsing
                     self.feed(htmldata)
-                except urllib2.HTTPError as herror:
+                except urllib.request.HTTPError as herror:
                     # Gestion de la fermeture de la socket en cas d'erreur
                     if response != None:
                         response.close()
@@ -94,10 +93,10 @@ class NewsParser(HTMLParser):
         while len(self.seeds) > 0:
             try:
                 self.nextSeed()
-            except urllib2.HTTPError as httperr:
-                print("[-] HTTPError "+str(httperr)+">"+httperr.message)
+            except urllib.request.HTTPError as httperr:
+                print("[-] HTTPError "+str(httperr)+">"+str(httperr.reason))
             except Exception as ex:
-                print("[-] Crawling Exception "+str(ex)+">"+ex.message)
+                print("[-] Crawling Exception "+str(ex))
 
     def handle_starttag(self,tag,attrs):
         """
