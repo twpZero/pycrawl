@@ -33,6 +33,7 @@ class Engine:
         self.wordBlacklist=[]
         self.linksBlacklist=[]
         self.sortedWords={}
+        self.counted=set()
 
     def setWordBlackList(self,wbl):
         """
@@ -111,8 +112,10 @@ class Engine:
                     # ajout du mot clé à la liste (une seule fois par lien)
                     if word not in self.links[href]:
                         self.links[href].append(word)
-                    # comptage du mot clé
-                    self._addWord(word.lower())
+                    # comptage du mot clé, une fois par lien et par crawl
+                    if (href,word) not in self.counted:
+                        self.counted.add((href,word))
+                        self._addWord(word)
 
     def top(self,numberOfMatch):
         """
