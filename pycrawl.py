@@ -110,7 +110,7 @@ def restore():
     try :
         f=open("links.dump","r")
         links=json.load(f)
-        obs.seen = links.keys()
+        obs.seen = set(links.keys())
         eng.links = links
         f.close()
     except:
