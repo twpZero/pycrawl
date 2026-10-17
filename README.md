@@ -29,7 +29,7 @@ obs.notify()
 
 ## Sample output
 
-[pycrawl-feed](https://github.com/twpZero/pycrawl-feed) holds a real `pycrawlfeed.json` produced by `pycrawlJson.py`: watched keywords with their new links, plus the trending words of the run.
+[pycrawl-feed](https://github.com/twpZero/pycrawl-feed) holds the `pycrawlfeed.json` produced by `pycrawlJson.py` every day: watched keywords with their new links, plus the trending words of the run. Browse it on [twpzero.github.io/pycrawl-feed](https://twpzero.github.io/pycrawl-feed/).
 
 ## How it works
 
@@ -58,7 +58,7 @@ wordblacklist = the,and,security,news,…
 * **The site renders its articles with JavaScript.** pycrawl reads raw HTML, so it sees nothing there.
 * **You need full-text search.** pycrawl indexes link text only, not article bodies.
 * **The source has an RSS feed.** Use the feed with any reader, it's more reliable than scraping.
-* **The default source list is old.** Some sites in `crawl.conf` have moved or closed since it was written. Review it before you rely on the results.
+* **A source blocks bots.** Some sites answer 403 or time out depending on where you crawl from. pycrawl logs the error and moves on, so check the `[-]` lines.
 
 ## Project layout
 

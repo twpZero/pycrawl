@@ -43,7 +43,9 @@ class NewsParser(HTMLParser):
         self.currentData = ""
         self.opener = urllib.request.build_opener()
         # Set User agent
-        self.opener.addheaders = [('User-Agent', 'Mozilla/5.0')]
+        self.opener.addheaders = [('User-Agent', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/130.0 Safari/537.36'),
+                                  ('Accept', 'text/html,application/xhtml+xml'),
+                                  ('Accept-Language', 'en-US,en;q=0.8,fr;q=0.6')]
 
     def nextSeed(self):
         """
@@ -61,7 +63,7 @@ class NewsParser(HTMLParser):
                 try :
                     print("[+] Crawling :"+self.currentSeed)
                     # Ouverture de l'url
-                    response = self.opener.open(self.currentSeed)
+                    response = self.opener.open(self.currentSeed, timeout=30)
                     htmldata=response.read()
                     try :
                         # Encodage obligatoire des données

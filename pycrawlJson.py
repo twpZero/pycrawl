@@ -18,6 +18,7 @@ from html.parser import HTMLParser
 from urllib.parse import urljoin
 import re
 import json
+import datetime
 
 # Nom par defaut du fichier de conf
 CONFIG_FILE="crawl.conf"
@@ -143,6 +144,7 @@ if __name__=="__main__":
     save()
     
     jsonToDump={}
+    jsonToDump["Updated"]=datetime.datetime.now(datetime.timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
     jsonToDump["Veille"]=jsonDisplay.json
     jsonToDump["Trends"]={}
     for count in eng.getWordsCounts() :

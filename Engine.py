@@ -103,13 +103,14 @@ class Engine:
             # Initialisation des la liste de mots clés, si le lien n'este pas deja
             self.links[href]=[]
         # recuperer chaque mot
-        for word in strWordList.split(" "):
+        for word in strWordList.split():
             # sanitise input
             word=self._processWord(word)
             if len(word) > 1:
                 if word not in self.wordBlacklist :
-                    # ajout du mot clé à la liste
-                    self.links[href].append(word.lower())
+                    # ajout du mot clé à la liste (une seule fois par lien)
+                    if word not in self.links[href]:
+                        self.links[href].append(word)
                     # comptage du mot clé
                     self._addWord(word.lower())
 
